@@ -13,22 +13,26 @@ export class DoughnutChartComponent implements OnInit {
 
   constructor() {
     this.chart = null;
+
+  }
+
+  ngOnInit() {
+    this.createChartData();
+    this.createChart();
+  }
+  
+  createChartData() {
     this.chartData = {
       labels: ['Ingresos', 'Egresos'],
       datasets: [
         {
-          data: [3000, 1500], // Valores de ingresos y egresos
+          data: this.data, // Valores de ingresos y egresos
           backgroundColor: ['#2dd36f', '#eb445a'], // Colores de las secciones de la dona
           hoverOffset: 4
         },
       ],
     };
   }
-
-  ngOnInit() {
-    this.createChart();
-  }
-
   createChart() {
     if (this.chart) {
       this.chart.destroy(); // Destruye el gráfico existente si hay uno
@@ -36,7 +40,7 @@ export class DoughnutChartComponent implements OnInit {
 
     const canvas = document.getElementById('doughnut-chart') as HTMLCanvasElement;
 
-    this.chart = new  (Chart as any)(canvas, {
+    this.chart = new (Chart as any)(canvas, {
       type: 'doughnut',
       data: this.chartData,
       options: {

@@ -1,5 +1,10 @@
 <ion-header [translucent]="true" >
   <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="toggleMenu()">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>
       Inicio
     </ion-title>
@@ -12,7 +17,7 @@
       <ion-card-title>Balance</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-text> 23265.00 Bs. </ion-text>
+      <ion-text> {{ingresos + egresos}} Bs. </ion-text>
     </ion-card-content>
   </ion-card>
   <ion-card class="card-balance" color="success">
@@ -20,7 +25,7 @@
       <ion-card-title>Ingresos</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-text> 2324.00 Bs. </ion-text>
+      <ion-text> {{ingresos}} Bs. </ion-text>
     </ion-card-content>
   </ion-card>
   <ion-card class="card-balance" color="danger">
@@ -28,7 +33,7 @@
       <ion-card-title>Egresos</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-text> 1000.00 Bs. </ion-text>
+      <ion-text> {{egresos}} Bs. </ion-text>
     </ion-card-content>
   </ion-card>
   <ion-card class="card-donut" color="light">
@@ -36,7 +41,7 @@
       <ion-card-title>Gráfico</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <app-doughnut-chart></app-doughnut-chart>
+      <app-doughnut-chart [data]="[ingresos, egresos]"></app-doughnut-chart>
     </ion-card-content>
   </ion-card>
 </ion-content>
