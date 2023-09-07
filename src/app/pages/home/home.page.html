@@ -1,20 +1,34 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header [translucent]="true" >
+  <ion-toolbar color="primary">
     <ion-title>
-      Blank
+      Inicio
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-card class="card-balance" color="secondary">
+    <ion-card-header>
+      <ion-card-title>Balance</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text> 23265.00 Bs. </ion-text>
+    </ion-card-content>
+  </ion-card>
+  <ion-card class="card-balance" color="success">
+    <ion-card-header>
+      <ion-card-title>Ingresos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text> 2324.00 Bs. </ion-text>
+    </ion-card-content>
+  </ion-card>
+  <ion-card class="card-balance" color="danger">
+    <ion-card-header>
+      <ion-card-title>Egresos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text> 1000.00 Bs. </ion-text>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
