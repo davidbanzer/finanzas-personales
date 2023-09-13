@@ -6,29 +6,9 @@
   </ion-header>
   <ion-content>
     <ion-list>
-      <ion-item>
-        <ion-icon name="home-outline"></ion-icon>
-        <span>Inicio</span>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="trending-up-outline"></ion-icon>
-        <span>Ingresos</span>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="trending-down-outline"></ion-icon>
-        <span>Egresos</span>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="swap-horizontal-outline"></ion-icon>
-        <span>Transferencias</span>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="copy-outline"></ion-icon>
-        <span>Cuentas</span>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="exit-outline"></ion-icon>
-        <span>Cerrar Sesión</span>
+      <ion-item *ngFor="let item of menuItems" [routerLink]="item.route" (click)="toggleMenu()">
+        <ion-icon slot="start" [name]="item.icon"></ion-icon>
+        <ion-label>{{item.text}}</ion-label>
       </ion-item>
     </ion-list>
   </ion-content>

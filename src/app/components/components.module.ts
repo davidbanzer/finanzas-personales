@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DoughnutChartComponent } from './doughnut-chart/doughnut-chart.component';
 import { MenuComponent } from './menu/menu.component';
 import { IonicModule } from '@ionic/angular';
+import { RouterLinkWithHref } from '@angular/router';
 
 
 
@@ -10,7 +11,8 @@ import { IonicModule } from '@ionic/angular';
   declarations: [DoughnutChartComponent, MenuComponent],
   imports: [
     CommonModule,
-    IonicModule
+    IonicModule,
+    RouterLinkWithHref 
   ],
   exports: [
     DoughnutChartComponent,
