@@ -12,8 +12,12 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'revenues',
-    loadChildren: () => import('./pages/revenues/revenues.module').then( m => m.RevenuesPageModule)
+    path: 'register',
+    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
+  },
+  {
+    path: 'incomes',
+    loadChildren: () => import('./pages/incomes/incomes.module').then( m => m.IncomesPageModule)
   },
   {
     path: 'expenses',
@@ -31,6 +35,11 @@ const routes: Routes = [
     path: 'transfers',
     loadChildren: () => import('./pages/transfers/transfers.module').then( m => m.TransfersPageModule)
   },
+  {
+    path: 'register',
+    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
+  },
+
 ];
 
 @NgModule({

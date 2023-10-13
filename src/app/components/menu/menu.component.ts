@@ -19,7 +19,7 @@ export class MenuComponent implements OnInit {
       },
       {
         text: 'Ingresos',
-        route: '/revenues',
+        route: '/incomes',
         icon: 'trending-up-outline'
       },
       {
