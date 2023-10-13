@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Finanzas Personales App</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-content-centered">
+  <form [formGroup]="loginForm" (ngSubmit)="login()" class="ion-padding">
+    <ion-item>
+      <ion-input formControlName="email" type="email" label="Correo" labelPlacement="floating"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input formControlName="password" type="password" label="Contraseña" labelPlacement="floating"></ion-input>
+    </ion-item>
+
+    <ion-button class="ion-margin-top"expand="full" type="submit" [disabled]="!loginForm.valid">Iniciar Sesión</ion-button>
+  </form>
+
+  <ion-text class="ion-text-center ion-margin-top ion-padding">
+    ¿No tienes una cuenta? <a routerLink="/register">Regístrate</a>
+  </ion-text>
+</ion-content>

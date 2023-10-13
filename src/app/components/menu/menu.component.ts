@@ -41,13 +41,26 @@ export class MenuComponent implements OnInit {
         text: 'Categorías',
         route: '/categories',
         icon: 'pricetags-outline'
+      },
+      {
+        text: 'Cerrar Sesión',
+        route: '/login',
+        icon: 'log-out-outline'
       }
     ]
   }
 
   ngOnInit() { }
 
-  toggleMenu() {
+  toggleMenu(event: any) {
     this.menuCtrl.toggle();
+    
+    if(event.target.textContent === 'Cerrar Sesión'){
+      this.logOut();
+    }
+  }
+
+  logOut(){
+    localStorage.removeItem('user');
   }
 }

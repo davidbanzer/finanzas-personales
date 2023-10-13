@@ -37,18 +37,31 @@ export class RegisterPage implements OnInit {
 
   register() {
     if (this.registerForm.valid) {
-      const formValues = this.registerForm.value;
-      this.loadingService.showLoading('Registrando...');
-      this.authService.register(formValues).subscribe((response: any) => {
-        this.loadingService.hideLoading();
-        this.registerForm.reset();
-        localStorage.setItem('user', JSON.stringify(response.user));
-        this.router.navigate(['/home']);
-      }, (error: any) => {
-        this.loadingService.hideLoading();
-        console.log(error);
-      });
+      this.registerUser();
     }
+  }
+
+  private registerUser() {
+    const formValues = this.registerForm.value;
+
+    this.loadingService.showLoading('Registrando...');
+
+    this.authService.register(formValues).subscribe({
+      next: (response: any) => this.handleRegisterSuccess(response),
+      error: (error: any) => this.handleRegisterError(error)
+    })
+  }
+
+  private handleRegisterSuccess(response: any) {
+    this.loadingService.hideLoading();
+    this.registerForm.reset();
+    localStorage.setItem('user', JSON.stringify(response.user));
+    this.router.navigate(['/home']);
+  }
+
+  private handleRegisterError(error: any) {
+    this.loadingService.hideLoading();
+    console.log(error);
   }
 
 }
