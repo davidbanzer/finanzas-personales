@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
-import { MenuItem } from 'src/app/interfaces/MenuItem';
 
 @Component({
   selector: 'app-menu',
@@ -8,7 +7,7 @@ import { MenuItem } from 'src/app/interfaces/MenuItem';
   styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
-  public menuItems: MenuItem[];
+  menuItems: any;
 
   constructor(private menuCtrl: MenuController) {
     this.menuItems = [

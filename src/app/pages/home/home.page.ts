@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoadingController, MenuController } from '@ionic/angular';
 import { AccountsService } from 'src/app/api/accounts.service';
 import { MovementsService } from 'src/app/api/movements.service';
+import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
   selector: 'app-home',
@@ -17,8 +18,8 @@ export class HomePage implements OnInit {
   constructor(
     private menuCtrl: MenuController,
     private accountsService: AccountsService,
-    private loadingCtrl: LoadingController,
-    private movementsService: MovementsService
+    private movementsService: MovementsService,
+    private loadingService: LoadingService
   ) {
     this.totalBalance = 0;
     this.accountsList = [];
@@ -37,9 +38,7 @@ export class HomePage implements OnInit {
 
   // Listar cuentas
   async listAccounts() {
-    await this.loadingCtrl.create({
-      message: 'Cargando ...'
-    }).then(loading => loading.present());
+    await this.loadingService.presentLoading('Cargando...');
 
     const user = JSON.parse(localStorage.getItem('user')!);
     this.accountsService.getAccountsByUserId(user.id).subscribe({
@@ -56,16 +55,15 @@ export class HomePage implements OnInit {
     for (const account of this.accountsList) {
       this.getBalanceForAccount(account.id);
     }
-    await this.loadingCtrl.dismiss();
+    await this.loadingService.dismissLoading();
   }
 
   async handleListAccountsError(error: any) {
-    await this.loadingCtrl.dismiss();
+    await this.loadingService.dismissLoading();
     console.log(error);
   }
 
   // Obtener balance por cuentas
-
   async getBalanceForAccount(accountId: string) {
     this.accountsService.getBalanceByAccountId(accountId).subscribe({
       next: (balanceResponse: any) => this.handleBalanceSuccess(balanceResponse, accountId),
@@ -102,7 +100,6 @@ export class HomePage implements OnInit {
 
   handleListMovementsSuccess(response: any): void {
     this.movementsList = response;
-    console.log(this.movementsList);
   }
   handleListMovementsError(error: any): void {
     console.log(error);
