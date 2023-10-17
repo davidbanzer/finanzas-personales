@@ -21,9 +21,7 @@
     </ion-card-content>
   </ion-card>
   <div class="hr"></div>
-  <ion-title>
-    Cuentas
-  </ion-title>
+  <h2 class="ion-text-center">Cuentas</h2>
   <ion-card *ngFor="let account of accountsList" color="medium">
     <ion-card-header>
       <ion-card-title>
@@ -36,9 +34,11 @@
     </ion-card-content>
   </ion-card>
   <div class="hr"></div>
-  <ion-title>
-    Movimientos
-  </ion-title>
+  <h2 class="ion-text-center">Movimientos</h2>
+  <p class="ion-text-center">Seleccione una fecha para mostrar los movimientos.</p>
+
+  <ion-datetime presentation="month-year" [(ngModel)]="date" (ionChange)="changeDate()"></ion-datetime>
+
   <ion-card *ngFor="let movement of movementsList"
     [color]="movement.type === 'I' ? 'success' : (movement.type === 'E' ? 'danger' : '')">
     <ion-card-header>

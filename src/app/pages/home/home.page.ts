@@ -9,7 +9,8 @@ import { MovementsService } from 'src/app/api/movements.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
-  totalBalance;
+  date: string;
+  totalBalance: number;
   accountsList: any[];
   movementsList: any[];
 
@@ -22,12 +23,14 @@ export class HomePage implements OnInit {
     this.totalBalance = 0;
     this.accountsList = [];
     this.movementsList = [];
+    this.date = new Date().toISOString();
   }
 
   ngOnInit() {
     this.listAccounts();
     this.listMovements();
   }
+
   toggleMenu() {
     this.menuCtrl.toggle();
   }
@@ -84,7 +87,14 @@ export class HomePage implements OnInit {
   // Obtener movimientos
   async listMovements(){
     const user = JSON.parse(localStorage.getItem('user')!);
-    this.movementsService.getMovementsByUserId(user.id).subscribe({
+    // Parsear fecha a formado MM/yyyy
+    const date = new Date(this.date);
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const monthString = month < 10 ? `0${month}` : `${month}`;
+    const dateString = `${monthString}/${year}`;
+    
+    this.movementsService.getMovementsByDate(user.id, dateString).subscribe({
       next: (response: any) => this.handleListMovementsSuccess(response),
       error: (error: any) => this.handleListMovementsError(error),
     });
@@ -108,4 +118,7 @@ export class HomePage implements OnInit {
     }
   }
 
+  changeDate() {
+    this.listMovements();
+  }
 }

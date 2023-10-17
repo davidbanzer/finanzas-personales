@@ -19,4 +19,16 @@ export class MovementsService {
     
     return this.http.get(url, {headers});
   }
+
+  getMovementsByDate(userId: string, month:string){
+    const url = `${this.API_URL}/movements/all/${userId}`;
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    const body = {
+      month
+    }
+
+    return this.http.post(url, body, {headers});
+  }
 }
