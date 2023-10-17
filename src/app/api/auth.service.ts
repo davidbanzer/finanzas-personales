@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { headersWithoutToken } from '../constants';
+import { ApiConfigService } from './api-config.service';
 
 
 @Injectable({
@@ -11,9 +11,10 @@ export class AuthService {
 
   private API_URL = environment.API_URL;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private apiConfig: ApiConfigService) { }
 
   register(user: any){
+    const url = `${this.API_URL}/auth/register`;
     const body = {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -21,19 +22,20 @@ export class AuthService {
       password: user.password
     }
 
-    const headers = headersWithoutToken;
+    const headers = this.apiConfig.getHeadersWithToken();
 
-    return this.http.post(`${this.API_URL}/auth/register`, body, headers);
+    return this.http.post(url, body, {headers});
   }
 
   login(user: any){
+    const url = `${this.API_URL}/auth/login`;
     const body = {
       email: user.email,
       password: user.password
     }
 
-    const headers = headersWithoutToken;
-
-    return this.http.post(`${this.API_URL}/auth/login`, body, headers);
+    const headers = this.apiConfig.getHeadersWithoutToken();
+    
+    return this.http.post(url, body, {headers});
   }
 }

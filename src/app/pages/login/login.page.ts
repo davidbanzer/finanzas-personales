@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 import { AuthService } from 'src/app/api/auth.service';
-import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +15,7 @@ export class LoginPage implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private loadingService: LoadingService,
+    private loadingCtrl: LoadingController,
     private authService: AuthService,
     private router: Router
   ) {
@@ -35,24 +35,28 @@ export class LoginPage implements OnInit {
 
   }
 
-  loginUser() {
+  async loginUser() {
     const formValues = this.loginForm.value;
-    this.loadingService.showLoading('Iniciando sesión...');
+
+    await this.loadingCtrl.create({
+      message: 'Iniciando sesión...'
+    }).then(loading => loading.present());
+
     this.authService.login(formValues).subscribe({
       next: (response: any) => this.handleLoginSuccess(response),
       error: (error: any) => this.handleLoginError(error)
     })
   }
 
-  handleLoginSuccess(response: any) {
-    this.loadingService.hideLoading();
+  async handleLoginSuccess(response: any) {
+    await this.loadingCtrl.dismiss();
     this.loginForm.reset();
     localStorage.setItem('user', JSON.stringify(response));
     this.router.navigate(['/home']);
   }
 
-  handleLoginError(error: any) {
-    this.loadingService.hideLoading();
+  async handleLoginError(error: any) {
+    await this.loadingCtrl.dismiss();
     console.log(error);
   }
 

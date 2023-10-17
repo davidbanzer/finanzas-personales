@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MenuController } from '@ionic/angular';
+import { LoadingController, MenuController } from '@ionic/angular';
 import { AuthService } from 'src/app/api/auth.service';
-import { LoadingService } from 'src/app/services/loading.service';
 
 @Component({
   selector: 'app-register',
@@ -18,7 +17,7 @@ export class RegisterPage implements OnInit {
     private menuCtrl: MenuController,
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private loadingService: LoadingService,
+    private loadingCtrl: LoadingController,
     private router: Router) {
 
     this.menuCtrl.enable(false);
@@ -41,10 +40,12 @@ export class RegisterPage implements OnInit {
     }
   }
 
-  private registerUser() {
+  private async registerUser() {
     const formValues = this.registerForm.value;
 
-    this.loadingService.showLoading('Registrando...');
+    await this.loadingCtrl.create({
+      message: 'Registrando usuario...'
+    }).then(loading => loading.present());
 
     this.authService.register(formValues).subscribe({
       next: (response: any) => this.handleRegisterSuccess(response),
@@ -52,15 +53,15 @@ export class RegisterPage implements OnInit {
     })
   }
 
-  private handleRegisterSuccess(response: any) {
-    this.loadingService.hideLoading();
+  private async handleRegisterSuccess(response: any) {
+    await this.loadingCtrl.dismiss();
     this.registerForm.reset();
-    localStorage.setItem('user', JSON.stringify(response.user));
+    localStorage.setItem('user', JSON.stringify(response));
     this.router.navigate(['/home']);
   }
 
-  private handleRegisterError(error: any) {
-    this.loadingService.hideLoading();
+  private async handleRegisterError(error: any) {
+    await this.loadingCtrl.dismiss();
     console.log(error);
   }
 

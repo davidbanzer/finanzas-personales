@@ -1,4 +1,4 @@
-<ion-header [translucent]="true" >
+<ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-button (click)="toggleMenu()">
@@ -14,34 +14,23 @@
 <ion-content [fullscreen]="true">
   <ion-card class="card-balance" color="secondary">
     <ion-card-header>
-      <ion-card-title>Balance</ion-card-title>
+      <ion-card-title>Balance total</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-text> {{ingresos + egresos}} Bs. </ion-text>
     </ion-card-content>
   </ion-card>
-  <ion-card class="card-balance" color="success">
+
+  <ion-card *ngFor="let account of accountsList" color="medium">
     <ion-card-header>
-      <ion-card-title>Ingresos</ion-card-title>
+      <ion-card-title>
+        {{account.name}}
+      </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-text> {{ingresos}} Bs. </ion-text>
+      <ion-text> {{account.description}}</ion-text>
+      <ion-text> {{account.initialBalance}} Bs. </ion-text>
     </ion-card-content>
   </ion-card>
-  <ion-card class="card-balance" color="danger">
-    <ion-card-header>
-      <ion-card-title>Egresos</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-text> {{egresos}} Bs. </ion-text>
-    </ion-card-content>
-  </ion-card>
-  <ion-card class="card-donut" color="light">
-    <ion-card-header>
-      <ion-card-title>Gráfico</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <app-doughnut-chart [data]="[ingresos, egresos]"></app-doughnut-chart>
-    </ion-card-content>
-  </ion-card>
+
 </ion-content>
