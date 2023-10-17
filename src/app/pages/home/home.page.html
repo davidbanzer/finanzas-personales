@@ -12,15 +12,18 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card class="card-balance" color="secondary">
+  <ion-card class="card-balance ion-margin-top" color="secondary">
     <ion-card-header>
       <ion-card-title>Balance total</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-text> {{ingresos + egresos}} Bs. </ion-text>
+      <p><strong style="font-size: 18px;">{{totalBalance}} Bs. </strong></p>
     </ion-card-content>
   </ion-card>
-
+  <div class="hr"></div>
+  <ion-title>
+    Cuentas
+  </ion-title>
   <ion-card *ngFor="let account of accountsList" color="medium">
     <ion-card-header>
       <ion-card-title>
@@ -28,8 +31,24 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-text> {{account.description}}</ion-text>
-      <ion-text> {{account.initialBalance}} Bs. </ion-text>
+      <p>{{account.description}}</p>
+      <p>Balance: <strong style="font-size: 18px;">{{ account.balance }} Bs.</strong></p>
+    </ion-card-content>
+  </ion-card>
+  <div class="hr"></div>
+  <ion-title>
+    Movimientos
+  </ion-title>
+  <ion-card *ngFor="let movement of movementsList"
+    [color]="movement.type === 'I' ? 'success' : (movement.type === 'E' ? 'danger' : '')">
+    <ion-card-header>
+      <ion-card-title>
+        {{movement.description}}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Fecha: {{movement.createdDate | date:'medium'}} </p>
+      <p>Monto: <strong style="font-size: 18px;">{{movement.amount}} Bs.</strong></p>
     </ion-card-content>
   </ion-card>
 

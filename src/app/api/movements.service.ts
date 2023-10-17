@@ -6,25 +6,17 @@ import { ApiConfigService } from './api-config.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AccountsService {
+export class MovementsService {
 
   private API_URL = environment.API_URL;
 
   constructor(private http: HttpClient, private apiConfig: ApiConfigService) { }
 
-  getAccountsByUserId(userId: number) {
-    const url = `${this.API_URL}/accounts/${userId}`;
-
+  getMovementsByUserId(userId: string) {
+    const url = `${this.API_URL}/movements/all/${userId}`;
+    
     const headers = this.apiConfig.getHeadersWithToken();
-
-    return this.http.get(url, {headers});
-  }
-
-  getBalanceByAccountId(accountId: string) {
-    const url = `${this.API_URL}/accounts/balance/${accountId}`;
-
-    const headers = this.apiConfig.getHeadersWithToken();
-
+    
     return this.http.get(url, {headers});
   }
 }

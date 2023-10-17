@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, MenuController } from '@ionic/angular';
 import { AccountsService } from 'src/app/api/accounts.service';
+import { MovementsService } from 'src/app/api/movements.service';
 
 @Component({
   selector: 'app-home',
@@ -8,28 +9,30 @@ import { AccountsService } from 'src/app/api/accounts.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
-  ingresos;
-  egresos;
-
+  totalBalance;
   accountsList: any[];
+  movementsList: any[];
 
   constructor(
     private menuCtrl: MenuController,
     private accountsService: AccountsService,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private movementsService: MovementsService
   ) {
-    this.ingresos = 0;
-    this.egresos = 0;
+    this.totalBalance = 0;
     this.accountsList = [];
+    this.movementsList = [];
   }
 
   ngOnInit() {
     this.listAccounts();
+    this.listMovements();
   }
   toggleMenu() {
     this.menuCtrl.toggle();
   }
 
+  // Listar cuentas
   async listAccounts() {
     await this.loadingCtrl.create({
       message: 'Cargando ...'
@@ -43,14 +46,66 @@ export class HomePage implements OnInit {
     });
   }
   async handleListAccountsSuccess(response: any) {
-    await this.loadingCtrl.dismiss();
     this.accountsList = response;
-    console.log(this.accountsList);
+    this.totalBalance = 0;
+
+    // Iterate through accounts and get balances
+    for (const account of this.accountsList) {
+      this.getBalanceForAccount(account.id);
+    }
+    await this.loadingCtrl.dismiss();
   }
 
   async handleListAccountsError(error: any) {
     await this.loadingCtrl.dismiss();
     console.log(error);
+  }
+
+  // Obtener balance por cuentas
+
+  async getBalanceForAccount(accountId: string) {
+    this.accountsService.getBalanceByAccountId(accountId).subscribe({
+      next: (balanceResponse: any) => this.handleBalanceSuccess(balanceResponse, accountId),
+      error: (error: any) => this.handleBalanceError(error),
+    });
+  }
+  async handleBalanceSuccess(balanceResponse: any, accountId: string) {
+    // Find the corresponding account in accountsList and update its balance field
+    const accountToUpdate = this.accountsList.find(account => account.id === accountId);
+    if (accountToUpdate) {
+      accountToUpdate.balance = balanceResponse; // Actualizar con el valor del balance
+      this.totalBalance += balanceResponse; // Actualizar el total
+    }
+  }
+  async handleBalanceError(error: any) {
+    console.log(error)
+  }
+
+  // Obtener movimientos
+  async listMovements(){
+    const user = JSON.parse(localStorage.getItem('user')!);
+    this.movementsService.getMovementsByUserId(user.id).subscribe({
+      next: (response: any) => this.handleListMovementsSuccess(response),
+      error: (error: any) => this.handleListMovementsError(error),
+    });
+  }
+
+  handleListMovementsSuccess(response: any): void {
+    this.movementsList = response;
+    console.log(this.movementsList);
+  }
+  handleListMovementsError(error: any): void {
+    console.log(error);
+  }
+
+  getCardColorClass(movementType: string): string {
+    if (movementType === 'I') {
+      return 'ion-color-success'; // Clase de color verde
+    } else if (movementType === 'E') {
+      return 'ion-color-danger'; // Clase de color rojo
+    } else {
+      return ''; // Clase predeterminada si no es "I" ni "E"
+    }
   }
 
 }
