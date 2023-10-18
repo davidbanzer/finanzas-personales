@@ -10,11 +10,12 @@ import { LoadingService } from 'src/app/services/loading.service';
   styleUrls: ['./categories.page.scss'],
 })
 export class CategoriesPage implements OnInit {
-  @ViewChild(IonModal) modal!: IonModal;
+  @ViewChild('addModal') modal!: IonModal;
+  @ViewChild('editModal') editCategoryModal!: IonModal;
 
   categoriesList: any[];
   categoryForm: FormGroup;
-  
+  editCategoryForm: FormGroup;
 
   constructor(
     private menuCtrl: MenuController,
@@ -24,6 +25,11 @@ export class CategoriesPage implements OnInit {
   ) {
     this.categoriesList = [];
     this.categoryForm = this.formBuilder.group({
+      name: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+    });
+    this.editCategoryForm = this.formBuilder.group({
+      id: ['', [Validators.required]],
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
     });
@@ -38,6 +44,7 @@ export class CategoriesPage implements OnInit {
     this.menuCtrl.toggle();
   }
 
+  // Listar categorías
   listCategories() {
     this.loadingService.presentLoading('Cargando...');
     const user = JSON.parse(localStorage.getItem('user')!);
@@ -56,7 +63,7 @@ export class CategoriesPage implements OnInit {
     this.loadingService.dismissLoading();
     console.log(error);
   }
-  
+
   // Agregar categoría
   addCategory(){
     if(this.categoryForm.valid){
@@ -81,8 +88,59 @@ export class CategoriesPage implements OnInit {
     this.modal.dismiss();
   }
 
+  // Eliminar categoría
+  deleteCategory(id: string){
+    this.loadingService.presentLoading('Eliminando categoría...');
+    this.categoriesService.deleteCategory(id).subscribe({
+      next: (response: any) => this.handleDeleteCategorySuccess(response),
+      error: (error: any) => this.handleDeleteCategoryError(error)
+    });
+  }
+  handleDeleteCategoryError(error: any): void {
+    this.loadingService.dismissLoading();
+    console.log(error);
+  }
+  handleDeleteCategorySuccess(response: any): void {
+    this.loadingService.dismissLoading();
+    this.listCategories();
+  }
+
+  // Actualizar categoría
+  updateCategory(){
+    this.loadingService.presentLoading('Actualizando categoría...');
+    const formValues = this.editCategoryForm.value;
+    const user = JSON.parse(localStorage.getItem('user')!);
+    this.categoriesService.updateCategory(user.id, formValues).subscribe({
+      next: (response: any) => this.handleUpdateCategorySuccess(response),
+      error: (error: any) => this.handleUpdateCategoryError(error)
+    });
+  }
+  handleUpdateCategoryError(error: any): void {
+    this.loadingService.dismissLoading();
+    console.log(error);
+  }
+  handleUpdateCategorySuccess(response: any): void {
+    this.loadingService.dismissLoading();
+    this.editCategoryForm.reset();
+    this.listCategories();
+    this.editCategoryModal.dismiss();
+  }
+
   cancelModal(){
     this.modal.dismiss();
+  }
+
+  cancelEditModal(){
+    this.editCategoryModal.dismiss();
+  }
+
+  openEditModal(category: any){
+    this.editCategoryForm.setValue({
+      id: category.id,
+      name: category.name,
+      description: category.description
+    });
+    this.editCategoryModal.present();
   }
 
 }
