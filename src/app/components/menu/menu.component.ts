@@ -17,14 +17,9 @@ export class MenuComponent implements OnInit {
         icon: 'home-outline'
       },
       {
-        text: 'Ingresos',
-        route: '/incomes',
-        icon: 'trending-up-outline'
-      },
-      {
-        text: 'Egresos',
-        route: '/expenses',
-        icon: 'trending-down-outline'
+        text: 'Movimientos',
+        route: '/movements',
+        icon: 'swap-vertical-outline'
       },
       {
         text: 'Transferencias',

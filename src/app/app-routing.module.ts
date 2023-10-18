@@ -16,14 +16,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
   },
   {
-    path: 'incomes',
-    loadChildren: () => import('./pages/incomes/incomes.module').then( m => m.IncomesPageModule)
-  },
-  {
-    path: 'expenses',
-    loadChildren: () => import('./pages/expenses/expenses.module').then( m => m.ExpensesPageModule)
-  },
-  {
     path: 'accounts',
     loadChildren: () => import('./pages/accounts/accounts.module').then( m => m.AccountsPageModule)
   },
@@ -38,7 +30,8 @@ const routes: Routes = [
   {
     path: 'register',
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
-  },  {
+  },
+  {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   },
