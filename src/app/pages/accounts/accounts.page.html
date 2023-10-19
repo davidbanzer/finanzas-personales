@@ -22,6 +22,11 @@
       <p>{{account.description}}</p>
       <p>Balance: <strong style="font-size: 18px;">{{ account.balance }} Bs.</strong></p>
     </ion-card-content>
+
+    <div style="display: flex; justify-content: flex-end">
+      <ion-button fill="clear" id="open-edit-modal" (click)="openEditModal(account)">Editar</ion-button>
+      <ion-button fill="clear" color="danger" (click)="deleteAccount(account.id)">Eliminar</ion-button>
+    </div>
   </ion-card>
 
   <ion-modal #addModal trigger="open-modal">

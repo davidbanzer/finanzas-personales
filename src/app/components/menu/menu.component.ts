@@ -17,16 +17,6 @@ export class MenuComponent implements OnInit {
         icon: 'home-outline'
       },
       {
-        text: 'Movimientos',
-        route: '/movements',
-        icon: 'swap-vertical-outline'
-      },
-      {
-        text: 'Transferencias',
-        route: '/transfers',
-        icon: 'swap-horizontal-outline'
-      },
-      {
         text: 'Cuentas',
         route: '/accounts',
         icon: 'wallet-outline'
@@ -35,6 +25,16 @@ export class MenuComponent implements OnInit {
         text: 'Categorías',
         route: '/categories',
         icon: 'pricetags-outline'
+      },
+      {
+        text: 'Movimientos',
+        route: '/movements',
+        icon: 'swap-vertical-outline'
+      },
+      {
+        text: 'Transferencias',
+        route: '/transfers',
+        icon: 'swap-horizontal-outline'
       },
       {
         text: 'Cerrar Sesión',
@@ -48,13 +48,13 @@ export class MenuComponent implements OnInit {
 
   toggleMenu(event: any) {
     this.menuCtrl.toggle();
-    
-    if(event.target.textContent === 'Cerrar Sesión'){
+
+    if (event.target.textContent === 'Cerrar Sesión') {
       this.logOut();
     }
   }
 
-  logOut(){
+  logOut() {
     localStorage.removeItem('user');
   }
 }

@@ -43,4 +43,26 @@ export class AccountsService {
     return this.http.post(url, body, {headers});
   }
 
+  deleteAccount(accountId: string){
+    const url = `${this.API_URL}/accounts/${accountId}`;
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    return this.http.delete(url, {headers});
+  }
+
+  updateAccount(userId: string, account: any){
+    const url = `${this.API_URL}/accounts/${account.id}`;
+    const body = {
+      name: account.name,
+      description: account.description,
+      initialBalance: account.initialBalance,
+      userId: userId
+    }
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    return this.http.put(url, body, {headers});
+  }
+
 }

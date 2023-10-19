@@ -9,7 +9,7 @@ import { LoadingService } from 'src/app/services/loading.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage  {
   date: string;
   totalBalance: number;
   accountsList: any[];
@@ -27,7 +27,8 @@ export class HomePage implements OnInit {
     this.date = new Date().toISOString();
   }
 
-  ngOnInit() {
+
+  ionViewDidEnter() {
     this.listAccounts();
     this.listMovements();
   }

@@ -105,4 +105,26 @@ export class AccountsPage implements OnInit {
     this.modal.dismiss();
   }
 
+  // Eliminar cuenta
+  deleteAccount(id: string){
+    this.loadingService.presentLoading('Eliminando cuenta...');
+    this.accountsService.deleteAccount(id).subscribe({
+      next: (response: any) => this.handleDeleteAccountSuccess(response),
+      error: (error: any) => this.handleDeleteAccountError(error)
+    });
+  }
+  handleDeleteAccountError(error: any): void {
+    this.loadingService.dismissLoading();
+    console.log(error);
+  }
+  handleDeleteAccountSuccess(response: any): void {
+    this.loadingService.dismissLoading();
+    this.listAccounts();
+  }
+
+  // Editar cuenta
+  openEditModal(account: any){
+    console.log(account);
+  }
+
 }
