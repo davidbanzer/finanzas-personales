@@ -37,24 +37,22 @@
   <div class="hr"></div>
   <h2 class="ion-text-center">Movimientos</h2>
   <em>
-    <p class="ion-text-center">Seleccione una fecha para mostrar los movimientos.</p>
+    <p class="ion-text-center">Seleccione una fecha para mostrar el balance</p>
   </em>
 
-  <ion-datetime presentation="month-year" [(ngModel)]="date" (ionChange)="changeDate()"></ion-datetime>
+  <ion-item>
+    <ion-input [readonly]="true" id="open_cal" placeholder="Seleccione un periodo" [value]="date | date"></ion-input>
+  </ion-item>
+  <ion-modal #dateModal trigger="open_cal" [keepContentsMounted]="true" [initialBreakpoint]="0.40">
+    <ng-template>
+      <div style="display: flex; justify-content: center; height: 100%;">
+        <ion-datetime presentation="month-year" [(ngModel)]="date" (ionChange)="changeDate()"></ion-datetime>
+      </div>
+    </ng-template>
+  </ion-modal>
 
-  <ion-card *ngFor="let movement of movementsList"
-    [color]="movement.type === 'I' ? 'success' : (movement.type === 'E' ? 'danger' : '')">
-    <ion-card-header>
-      <ion-card-title>
-        {{movement.description}}
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p>Fecha: {{movement.createdDate | date:'medium'}} </p>
-      <p>Monto: <strong style="font-size: 18px;">{{movement.amount}} Bs.</strong></p>
-    </ion-card-content>
-  </ion-card>
-
-  <p *ngIf="movementsList.length === 0" class="ion-text-center">Sin movimientos en este mes</p>
+  <p class="ion-text-center">Ingresos: <strong>{{totalIncomes}} Bs.</strong></p>
+  <P class="ion-text-center">Egresos: <strong>{{totalExpenses}} Bs.</strong></P>
+  <app-doughnut-chart [incomes]="totalIncomes" [expenses]="totalExpenses"></app-doughnut-chart>
 
 </ion-content>

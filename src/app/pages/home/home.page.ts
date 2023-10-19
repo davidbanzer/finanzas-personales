@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { LoadingController, MenuController } from '@ionic/angular';
 import { AccountsService } from 'src/app/api/accounts.service';
 import { MovementsService } from 'src/app/api/movements.service';
@@ -10,10 +10,13 @@ import { LoadingService } from 'src/app/services/loading.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage  {
+  @ViewChild('dateModal') dateModal!: any;
   date: string;
   totalBalance: number;
   accountsList: any[];
   movementsList: any[];
+  totalIncomes: number;
+  totalExpenses: number;
 
   constructor(
     private menuCtrl: MenuController,
@@ -25,6 +28,8 @@ export class HomePage  {
     this.accountsList = [];
     this.movementsList = [];
     this.date = new Date().toISOString();
+    this.totalIncomes = 0;
+    this.totalExpenses = 0;
   }
 
 
@@ -101,22 +106,17 @@ export class HomePage  {
 
   async handleListMovementsSuccess(response: any): Promise<void> {
     this.movementsList = response;
+    // Calcular totales
+    this.totalIncomes = this.movementsList.map(movement => movement.type === 'I' ? movement.amount : 0).reduce((a, b) => a + b, 0);
+    this.totalExpenses = this.movementsList.map(movement => movement.type === 'E' ? movement.amount : 0).reduce((a, b) => a + b, 0);
   }
   async handleListMovementsError(error: any) {
     console.log(error);
   }
 
-  getCardColorClass(movementType: string): string {
-    if (movementType === 'I') {
-      return 'ion-color-success'; // Clase de color verde
-    } else if (movementType === 'E') {
-      return 'ion-color-danger'; // Clase de color rojo
-    } else {
-      return ''; // Clase predeterminada si no es "I" ni "E"
-    }
-  }
-
   changeDate() {
     this.listMovements();
+    this.dateModal.dismiss();
   }
+  
 }
