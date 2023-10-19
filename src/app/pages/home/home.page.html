@@ -35,13 +35,13 @@
     </ion-card-content>
   </ion-card>
   <div class="hr"></div>
-  <h2 class="ion-text-center">Movimientos</h2>
+  <h2 class="ion-text-center">Balance por periodo</h2>
   <em>
     <p class="ion-text-center">Seleccione una fecha para mostrar el balance</p>
   </em>
 
   <ion-item>
-    <ion-input [readonly]="true" id="open_cal" placeholder="Seleccione un periodo" [value]="date | date"></ion-input>
+    <ion-input [readonly]="true" class="ion-text-center" id="open_cal" placeholder="Seleccione un periodo" [value]="date | date:'MMMM yyyy'"></ion-input>
   </ion-item>
   <ion-modal #dateModal trigger="open_cal" [keepContentsMounted]="true" [initialBreakpoint]="0.40">
     <ng-template>
