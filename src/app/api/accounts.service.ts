@@ -27,4 +27,20 @@ export class AccountsService {
 
     return this.http.get(url, {headers});
   }
+
+  addAccount(userId: string, account: any) {
+    const url = `${this.API_URL}/accounts`;
+
+    const body = {
+      name: account.name,
+      description: account.description,
+      initialBalance: account.initialBalance,
+      userId: userId
+    }
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    return this.http.post(url, body, {headers});
+  }
+
 }

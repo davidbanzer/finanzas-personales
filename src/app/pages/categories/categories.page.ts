@@ -107,13 +107,15 @@ export class CategoriesPage implements OnInit {
 
   // Actualizar categoría
   updateCategory(){
-    this.loadingService.presentLoading('Actualizando categoría...');
-    const formValues = this.editCategoryForm.value;
-    const user = JSON.parse(localStorage.getItem('user')!);
-    this.categoriesService.updateCategory(user.id, formValues).subscribe({
-      next: (response: any) => this.handleUpdateCategorySuccess(response),
-      error: (error: any) => this.handleUpdateCategoryError(error)
-    });
+    if(this.editCategoryForm.valid){
+      this.loadingService.presentLoading('Actualizando categoría...');
+      const formValues = this.editCategoryForm.value;
+      const user = JSON.parse(localStorage.getItem('user')!);
+      this.categoriesService.updateCategory(user.id, formValues).subscribe({
+        next: (response: any) => this.handleUpdateCategorySuccess(response),
+        error: (error: any) => this.handleUpdateCategoryError(error)
+      });
+    }
   }
   handleUpdateCategoryError(error: any): void {
     this.loadingService.dismissLoading();
