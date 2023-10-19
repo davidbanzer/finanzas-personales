@@ -10,9 +10,11 @@ import { LoadingService } from 'src/app/services/loading.service';
   styleUrls: ['./accounts.page.scss'],
 })
 export class AccountsPage implements OnInit {
-  @ViewChild('addModal') modal!: IonModal;
+  @ViewChild('addModal') addAccountModal!: IonModal;
+  @ViewChild('editModal') editAccountModal!: IonModal;
   accountsList: any[];
   accountForm: FormGroup;
+  editAccountForm: FormGroup;
 
   constructor(
     private menuCtrl: MenuController,
@@ -22,6 +24,13 @@ export class AccountsPage implements OnInit {
   ) {
     this.accountsList = [];
     this.accountForm = this.formBuilder.group({
+      name: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+      initialBalance: ['', [Validators.required]]
+    });
+
+    this.editAccountForm = this.formBuilder.group({
+      id: ['', [Validators.required]],
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
       initialBalance: ['', [Validators.required]]
@@ -98,11 +107,15 @@ export class AccountsPage implements OnInit {
     this.loadingService.dismissLoading();
     this.accountForm.reset();
     this.listAccounts();
-    this.modal.dismiss();
+    this.addAccountModal.dismiss();
   }
 
   cancelModal(){
-    this.modal.dismiss();
+    this.addAccountModal.dismiss();
+  }
+
+  cancelEditModal(){
+    this.editAccountModal.dismiss();
   }
 
   // Eliminar cuenta
@@ -124,7 +137,36 @@ export class AccountsPage implements OnInit {
 
   // Editar cuenta
   openEditModal(account: any){
-    console.log(account);
+    this.editAccountForm.setValue({
+      id: account.id,
+      name: account.name,
+      description: account.description,
+      initialBalance: account.initialBalance
+    });
+    this.editAccountModal.present();
+  }
+
+  updateAccount(){
+    if(this.editAccountForm.valid){
+      this.loadingService.presentLoading('Actualizando cuenta...');
+      const formValues = this.editAccountForm.value;
+      const user = JSON.parse(localStorage.getItem('user')!);
+      
+      this.accountsService.updateAccount(user.id, formValues).subscribe({
+        next: (response: any) => this.handleUpdateAccountSuccess(response),
+        error: (error: any) => this.handleUpdateAccountError(error)
+      });
+    }
+  }
+  handleUpdateAccountError(error: any): void {
+    this.loadingService.dismissLoading();
+    console.log(error);
+  }
+  handleUpdateAccountSuccess(response: any): void {
+    this.loadingService.dismissLoading();
+    this.editAccountForm.reset();
+    this.listAccounts();
+    this.editAccountModal.dismiss();
   }
 
 }

@@ -39,7 +39,7 @@ export class HomePage  {
 
   // Listar cuentas
   async listAccounts() {
-    await this.loadingService.presentLoading('Cargando...');
+    await this.loadingService.presentLoading('Cargando cuentas...');
 
     const user = JSON.parse(localStorage.getItem('user')!);
     this.accountsService.getAccountsByUserId(user.id).subscribe({
@@ -99,10 +99,10 @@ export class HomePage  {
     });
   }
 
-  handleListMovementsSuccess(response: any): void {
+  async handleListMovementsSuccess(response: any): Promise<void> {
     this.movementsList = response;
   }
-  handleListMovementsError(error: any): void {
+  async handleListMovementsError(error: any) {
     console.log(error);
   }
 

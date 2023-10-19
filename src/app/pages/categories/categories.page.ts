@@ -10,7 +10,7 @@ import { LoadingService } from 'src/app/services/loading.service';
   styleUrls: ['./categories.page.scss'],
 })
 export class CategoriesPage implements OnInit {
-  @ViewChild('addModal') modal!: IonModal;
+  @ViewChild('addModal') addCategoryModal!: IonModal;
   @ViewChild('editModal') editCategoryModal!: IonModal;
 
   categoriesList: any[];
@@ -85,7 +85,7 @@ export class CategoriesPage implements OnInit {
     this.loadingService.dismissLoading();
     this.categoryForm.reset();
     this.listCategories();
-    this.modal.dismiss();
+    this.addCategoryModal.dismiss();
   }
 
   // Eliminar categoría
@@ -129,7 +129,7 @@ export class CategoriesPage implements OnInit {
   }
 
   cancelModal(){
-    this.modal.dismiss();
+    this.addCategoryModal.dismiss();
   }
 
   cancelEditModal(){
