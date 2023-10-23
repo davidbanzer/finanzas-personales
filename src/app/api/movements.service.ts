@@ -31,4 +31,21 @@ export class MovementsService {
 
     return this.http.post(url, body, {headers});
   }
+
+  addMovement(movement: any){
+    const url = `${this.API_URL}/movements`;
+
+    const body = {
+      description: movement.description,
+      amount: movement.amount,
+      type: movement.type,
+      createdDate: movement.createdDate,
+      categoryId: movement.categoryId,
+      accountId: movement.accountId
+    }
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    return this.http.post(url, body, {headers});
+  }
 }

@@ -15,16 +15,16 @@
   <ion-item>
     <ion-select label="Criterio" [(ngModel)]="selectedCriterion" placeholder="Seleccionar criterio de búsqueda"
       (ionChange)="selectCriterion($event)">
-      <ion-select-option value="description">Descripción</ion-select-option>
-      <ion-select-option value="category">Categoría</ion-select-option>
-      <ion-select-option value="date">Fecha</ion-select-option>
-      <ion-select-option value="type">Tipo</ion-select-option>
       <ion-select-option value="account">Cuenta</ion-select-option>
+      <ion-select-option value="category">Categoría</ion-select-option>
+      <ion-select-option value="type">Tipo</ion-select-option>
+      <ion-select-option value="description">Descripción</ion-select-option>
+      <ion-select-option value="date">Fecha</ion-select-option>
     </ion-select>
   </ion-item>
 
-  <ion-searchbar *ngIf="selectedCriterion === 'description' || selectedCriterion === 'category'"
-    placeholder="Buscar movimiento..." (ionInput)="search($event)"></ion-searchbar>
+  <ion-searchbar *ngIf="selectedCriterion === 'description'" placeholder="Buscar movimiento..."
+    (ionInput)="search($event)"></ion-searchbar>
 
   <ion-item *ngIf="selectedCriterion === 'type'">
     <ion-select label="Tipo" placeholder="Seleccione el tipo" (ionChange)="search($event)">
@@ -35,6 +35,13 @@
 
   <ion-item *ngIf="selectedCriterion === 'date'">
     <ion-datetime presentation="date" (ionChange)="search($event)"></ion-datetime>
+  </ion-item>
+
+  <ion-item *ngIf="selectedCriterion === 'category'">
+    <ion-select label="Categoría" placeholder="Seleccione la categoría" (ionChange)="search($event)">
+      <ion-select-option *ngFor="let category of categoriesList"
+        [value]="category.id">{{category.name}}</ion-select-option>
+    </ion-select>
   </ion-item>
 
   <ion-item *ngIf="selectedCriterion === 'account'">
@@ -48,7 +55,8 @@
   </div>
 
   <p class="ion-text-center" *ngIf="movementsList.length === 0">Sin movimientos</p>
-  <p class="ion-text-center" *ngIf="movementsListFiltered.length === 0 && movementsList.length > 0">No se encontraron resultados</p>
+  <p class="ion-text-center" *ngIf="movementsListFiltered.length === 0 && movementsList.length > 0">No se encontraron
+    resultados</p>
 
   <ion-card *ngFor="let movement of movementsListFiltered"
     [color]="movement.type === 'I' ? 'success' : (movement.type === 'E' ? 'danger' : '')">
@@ -64,7 +72,7 @@
       <p>Monto: <strong style="font-size: 18px;">{{ movement.amount }} Bs.</strong></p>
     </ion-card-content>
     <div style="display: flex; justify-content: flex-end">
-      <ion-button color="light" id="open-edit-modal" >
+      <ion-button color="light" id="open-edit-modal">
         <ion-icon name="pencil"></ion-icon>
       </ion-button>
       <ion-button color="light">
@@ -72,6 +80,55 @@
       </ion-button>
     </div>
   </ion-card>
+
+  <ion-modal #addModal trigger="open-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Agregar movimiento</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <form [formGroup]="movementForm" (ngSubmit)="addMovement()">
+          <ion-item>
+            <ion-select formControlName="accountId" label="Cuenta" placeholder="Seleccione la cuenta">
+              <ion-select-option *ngFor="let account of accountsList"
+                [value]="account.id">{{account.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-select formControlName="categoryId" label="Categoría" placeholder="Seleccione la categoría">
+              <ion-select-option *ngFor="let category of categoriesList"
+                [value]="category.id">{{category.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-select formControlName="type" label="Tipo" placeholder="Seleccione el tipo">
+              <ion-select-option value="I">Ingreso</ion-select-option>
+              <ion-select-option value="E">Egreso</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-input formControlName="description" type="text" label="Descripción"
+              labelPlacement="floating"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input formControlName="amount" type="number" label="Monto" labelPlacement="floating"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              Fecha
+            </ion-label>
+          </ion-item>
+          <ion-datetime formControlName="createdDate" presentation="date"></ion-datetime>
+          
+          <ion-button expand="full" class="ion-margin-top" type="submit"
+            [disabled]="!movementForm.valid">Agregar</ion-button>
+          <ion-button expand="full" class="ion-margin-top" (click)="cancelModal()" color="danger">Cancelar</ion-button>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button id="open-modal">

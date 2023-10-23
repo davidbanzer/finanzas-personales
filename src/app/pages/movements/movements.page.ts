@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MenuController } from '@ionic/angular';
 import { AccountsService } from 'src/app/api/accounts.service';
 import { CategoriesService } from 'src/app/api/categories.service';
@@ -11,27 +12,41 @@ import { LoadingService } from 'src/app/services/loading.service';
   styleUrls: ['./movements.page.scss'],
 })
 export class MovementsPage implements OnInit {
+  @ViewChild('addModal') addMovementModal!: any;
   movementsList: any[];
   movementsListFiltered: any[];
   accountsList: any[];
+  categoriesList: any[];
   selectedCriterion: string;
+  movementForm: FormGroup;
 
   constructor(
     private menuCtrl: MenuController,
     private loadingService: LoadingService,
     private movementsService: MovementsService,
     private categoriesService: CategoriesService,
-    private accountsService: AccountsService
+    private accountsService: AccountsService,
+    private formBuilder: FormBuilder
   ) {
     this.movementsList = [];
     this.movementsListFiltered = [];
     this.accountsList = [];
+    this.categoriesList = [];
     this.selectedCriterion = '';
+    this.movementForm = this.formBuilder.group({
+      description: ['', [Validators.required]],
+      amount: ['', [Validators.required]],
+      type: ['', [Validators.required]],
+      createdDate: [new Date().toISOString(), [Validators.required]],
+      categoryId: ['', [Validators.required]],
+      accountId: ['', [Validators.required]]
+    });
   }
 
   ngOnInit() {
     this.listMovements();
     this.getAccountsByUserId();
+    this.getCategoriesByUserId();
   }
 
   toggleMenu() {
@@ -105,6 +120,52 @@ export class MovementsPage implements OnInit {
     this.accountsList = response;
   }
 
+  // Obtener categorias del usuario
+  getCategoriesByUserId() {
+    const user = JSON.parse(localStorage.getItem('user')!);
+    this.categoriesService.getCategoriesByUserId(user.id).subscribe({
+      next: (response: any) => this.handleGetCategoriesByUserIdSuccess(response),
+      error: (error: any) => this.handleGetCategoriesByUserIdError(error)
+    });
+  }
+  handleGetCategoriesByUserIdError(error: any): void {
+    console.log(error);
+  }
+  handleGetCategoriesByUserIdSuccess(response: any): void {
+    this.categoriesList = response;
+  }
+
+  // Agregar movimiento
+  addMovement(){
+    if(this.movementForm.valid){
+      this.loadingService.presentLoading('Agregando movimiento...');
+      const formValues = this.movementForm.value;
+      
+      this.movementsService.addMovement(formValues).subscribe({
+        next: (response: any) => this.handleAddMovementSuccess(response),
+        error: (error: any) => this.handleAddMovementError(error)
+      });
+    }
+  }
+  handleAddMovementError(error: any): void {
+    this.loadingService.dismissLoading();
+    console.log(error);
+  }
+  handleAddMovementSuccess(response: any): void {
+    this.loadingService.dismissLoading();
+    this.addMovementModal.dismiss();
+    this.listMovements();
+    this.movementForm.reset();
+  }
+
+  changeDate(event: Event){
+    this.movementForm.controls['createdDate'].setValue((event.target as HTMLInputElement).value);
+  }
+
+  cancelModal(){
+    this.addMovementModal.dismiss();
+  }
+
   // Buscador
   selectCriterion(event: Event) {
     this.selectedCriterion =  (event.target as HTMLInputElement).value.toLowerCase();
@@ -119,7 +180,7 @@ export class MovementsPage implements OnInit {
       if (this.selectedCriterion === 'description') {
         return movement.description.toLowerCase().includes(query);
       } else if (this.selectedCriterion === 'category') {
-        return movement.category.toLowerCase().includes(query);
+        return movement.categoryId.toLowerCase().includes(query);
       } else if (this.selectedCriterion === 'date') {
         query = query.split('t')[0];
         return movement.createdDate.split('T')[0].toLowerCase().includes(query);
