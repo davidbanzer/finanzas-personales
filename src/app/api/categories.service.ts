@@ -14,9 +14,17 @@ export class CategoriesService {
     private http: HttpClient,
     private apiConfig: ApiConfigService
     ) { }
+    
+  getCategoryById(categoryId: string){
+    const url = `${this.API_URL}/categories/${categoryId}`;
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    return this.http.get(url, {headers});
+  }
 
   getCategoriesByUserId(userId: string){
-    const url = `${this.API_URL}/categories/${userId}`;
+    const url = `${this.API_URL}/categories/all/${userId}`;
 
     const headers = this.apiConfig.getHeadersWithToken();
 

@@ -1,13 +1,72 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>movements</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="toggleMenu()">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      Movimientos
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">movements</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" style="--padding-bottom: 70px;">
+  <ion-item>
+    <ion-select label="Criterio" [(ngModel)]="selectedCriterion" placeholder="Seleccionar criterio de búsqueda"
+      (ionChange)="selectCriterion($event)">
+      <ion-select-option value="description">Descripción</ion-select-option>
+      <ion-select-option value="category">Categoría</ion-select-option>
+      <ion-select-option value="date">Fecha</ion-select-option>
+      <ion-select-option value="type">Tipo</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-searchbar *ngIf="selectedCriterion === 'description' || selectedCriterion === 'category'"
+    placeholder="Buscar movimiento..." (ionInput)="search($event)"></ion-searchbar>
+
+  <ion-item *ngIf="selectedCriterion === 'type'">
+    <ion-select label="Tipo" placeholder="Seleccione el tipo" (ionChange)="search($event)">
+      <ion-select-option value="I">Ingreso</ion-select-option>
+      <ion-select-option value="E">Egreso</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item *ngIf="selectedCriterion === 'date'">
+    <ion-datetime presentation="date" (ionChange)="search($event)"></ion-datetime>
+  </ion-item>
+  <div style="display: flex; justify-content: flex-end">
+    <ion-button fill="clear" (click)="clearFilters()">Limpiar criterio</ion-button>
+  </div>
+
+  <p class="ion-text-center" *ngIf="movementsList.length === 0">Sin movimientos</p>
+  <p class="ion-text-center" *ngIf="movementsListFiltered.length === 0 && movementsList.length > 0">No se encontraron resultados</p>
+  
+  <ion-card *ngFor="let movement of movementsListFiltered"
+    [color]="movement.type === 'I' ? 'success' : (movement.type === 'E' ? 'danger' : '')">
+    <ion-card-header>
+      <ion-card-title>
+        {{movement.description}}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Fecha: <strong>{{ movement.createdDate | date:'dd/MM/yyyy' }}</strong></p>
+      <p>Categoría: <strong>{{ movement.category }}</strong></p>
+      <p>Monto: <strong style="font-size: 18px;">{{ movement.amount }} Bs.</strong></p>
+    </ion-card-content>
+    <div style="display: flex; justify-content: flex-end">
+      <ion-button color="light" id="open-edit-modal" >
+        <ion-icon name="pencil"></ion-icon>
+      </ion-button>
+      <ion-button color="light">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </div>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button id="open-modal">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

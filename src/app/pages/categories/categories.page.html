@@ -12,7 +12,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" style="--padding-bottom: 70px;">
-  <ion-card *ngFor="let category of categoriesList" color="light">
+  <p class="ion-text-center" *ngIf="categoriesList.length === 0">Sin categorías</p>
+
+  <ion-card *ngFor="let category of categoriesList" color="warning">
     <ion-card-header>
       <ion-card-title>
         {{category.name}}
@@ -23,8 +25,12 @@
     </ion-card-content>
 
     <div style="display: flex; justify-content: flex-end">
-      <ion-button fill="clear" id="open-edit-modal" (click)="openEditModal(category)">Editar</ion-button>
-      <ion-button fill="clear" color="danger" (click)="deleteCategory(category.id)">Eliminar</ion-button>
+      <ion-button color="light" id="open-edit-modal" (click)="openEditModal(category)">
+        <ion-icon name="pencil"></ion-icon>
+      </ion-button>
+      <ion-button color="light" (click)="deleteCategory(category.id)">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
     </div>
   </ion-card>
 

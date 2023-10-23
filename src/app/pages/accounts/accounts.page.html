@@ -11,23 +11,27 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" style="--padding-bottom: 70px;">
   <p class="ion-text-center" *ngIf="accountsList.length === 0">Sin cuentas</p>
 
-  <ion-card *ngFor="let account of accountsList" color="light">
+  <ion-card *ngFor="let account of accountsList" color="tertiary">
     <ion-card-header>
       <ion-card-title>
         {{account.name}}
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p>{{account.description}}</p>
+      <p>Descripción: <strong>{{account.description}}</strong></p>
       <p>Balance: <strong style="font-size: 18px;">{{ account.balance }} Bs.</strong></p>
     </ion-card-content>
 
     <div style="display: flex; justify-content: flex-end">
-      <ion-button fill="clear" id="open-edit-modal" (click)="openEditModal(account)">Editar</ion-button>
-      <ion-button fill="clear" color="danger" (click)="deleteAccount(account.id)">Eliminar</ion-button>
+      <ion-button id="open-edit-modal" (click)="openEditModal(account)" color="light">
+        <ion-icon name="pencil"></ion-icon>
+      </ion-button>
+      <ion-button  (click)="deleteAccount(account.id)" color="light">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
     </div>
   </ion-card>
 
@@ -83,7 +87,8 @@
 
           <ion-button expand="full" class="ion-margin-top" type="submit"
             [disabled]="!editAccountForm.valid">Editar</ion-button>
-          <ion-button expand="full" class="ion-margin-top" (click)="cancelEditModal()" color="danger">Cancelar</ion-button>
+          <ion-button expand="full" class="ion-margin-top" (click)="cancelEditModal()"
+            color="danger">Cancelar</ion-button>
         </form>
       </ion-content>
     </ng-template>
