@@ -19,6 +19,7 @@
       <ion-select-option value="category">Categoría</ion-select-option>
       <ion-select-option value="date">Fecha</ion-select-option>
       <ion-select-option value="type">Tipo</ion-select-option>
+      <ion-select-option value="account">Cuenta</ion-select-option>
     </ion-select>
   </ion-item>
 
@@ -35,13 +36,20 @@
   <ion-item *ngIf="selectedCriterion === 'date'">
     <ion-datetime presentation="date" (ionChange)="search($event)"></ion-datetime>
   </ion-item>
-  <div style="display: flex; justify-content: flex-end">
+
+  <ion-item *ngIf="selectedCriterion === 'account'">
+    <ion-select label="Cuenta" placeholder="Seleccione la cuenta" (ionChange)="search($event)">
+      <ion-select-option *ngFor="let account of accountsList" [value]="account.id">{{account.name}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <div *ngIf="selectedCriterion !== ''" style="display: flex; justify-content: flex-end">
     <ion-button fill="clear" (click)="clearFilters()">Limpiar criterio</ion-button>
   </div>
 
   <p class="ion-text-center" *ngIf="movementsList.length === 0">Sin movimientos</p>
   <p class="ion-text-center" *ngIf="movementsListFiltered.length === 0 && movementsList.length > 0">No se encontraron resultados</p>
-  
+
   <ion-card *ngFor="let movement of movementsListFiltered"
     [color]="movement.type === 'I' ? 'success' : (movement.type === 'E' ? 'danger' : '')">
     <ion-card-header>
@@ -50,8 +58,9 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p>Fecha: <strong>{{ movement.createdDate | date:'dd/MM/yyyy' }}</strong></p>
+      <p>Cuenta: <strong>{{movement.account}}</strong></p>
       <p>Categoría: <strong>{{ movement.category }}</strong></p>
+      <p>Fecha: <strong>{{ movement.createdDate | date:'dd/MM/yyyy' }}</strong></p>
       <p>Monto: <strong style="font-size: 18px;">{{ movement.amount }} Bs.</strong></p>
     </ion-card-content>
     <div style="display: flex; justify-content: flex-end">

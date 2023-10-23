@@ -13,7 +13,7 @@ export class AccountsService {
   constructor(private http: HttpClient, private apiConfig: ApiConfigService) { }
 
   getAccountsByUserId(userId: number) {
-    const url = `${this.API_URL}/accounts/${userId}`;
+    const url = `${this.API_URL}/accounts/all/${userId}`;
 
     const headers = this.apiConfig.getHeadersWithToken();
 
@@ -63,6 +63,14 @@ export class AccountsService {
     const headers = this.apiConfig.getHeadersWithToken();
 
     return this.http.put(url, body, {headers});
+  }
+
+  getAccountById(accountId: string){
+    const url = `${this.API_URL}/accounts/${accountId}`;
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    return this.http.get(url, {headers});
   }
 
 }
