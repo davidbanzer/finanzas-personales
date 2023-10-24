@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/api/auth.service';
 import { LoadingService } from 'src/app/services/loading.service';
 
@@ -17,7 +18,8 @@ export class LoginPage implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private toastController: ToastController
   ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -55,7 +57,18 @@ export class LoginPage implements OnInit {
 
   async handleLoginError(error: any) {
     await this.loadingService.dismissLoading();
+    this.presentToast(error.error.detail);
     console.log(error);
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 
 }

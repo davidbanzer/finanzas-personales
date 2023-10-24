@@ -13,12 +13,16 @@ import { LoadingService } from 'src/app/services/loading.service';
 })
 export class MovementsPage implements OnInit {
   @ViewChild('addModal') addMovementModal!: any;
+  @ViewChild('editModal') editMovementModal!: any;
+  @ViewChild('alert') alert!: any;
   movementsList: any[];
   movementsListFiltered: any[];
   accountsList: any[];
   categoriesList: any[];
   selectedCriterion: string;
   movementForm: FormGroup;
+  editMovementForm: FormGroup;
+  maxDate: string;
 
   constructor(
     private menuCtrl: MenuController,
@@ -33,20 +37,33 @@ export class MovementsPage implements OnInit {
     this.accountsList = [];
     this.categoriesList = [];
     this.selectedCriterion = '';
+    this.maxDate = new Date().toISOString();
     this.movementForm = this.formBuilder.group({
       description: ['', [Validators.required]],
       amount: ['', [Validators.required]],
       type: ['', [Validators.required]],
-      createdDate: [new Date().toISOString(), [Validators.required]],
+      createdDate: [this.maxDate, [Validators.required]],
+      categoryId: ['', [Validators.required]],
+      accountId: ['', [Validators.required]]
+    });
+    
+    this.editMovementForm = this.formBuilder.group({
+      id: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+      amount: ['', [Validators.required]],
+      type: ['', [Validators.required]],
+      createdDate: ['', [Validators.required]],
       categoryId: ['', [Validators.required]],
       accountId: ['', [Validators.required]]
     });
   }
-
-  ngOnInit() {
+  ionViewDidEnter(){
     this.listMovements();
     this.getAccountsByUserId();
     this.getCategoriesByUserId();
+  }
+  ngOnInit() {
+
   }
 
   toggleMenu() {
@@ -166,6 +183,63 @@ export class MovementsPage implements OnInit {
     this.addMovementModal.dismiss();
   }
 
+  cancelEditModal(){
+    this.editMovementModal.dismiss();
+  }
+
+  // Editar movimiento
+  updateMovement(){
+    if(this.editMovementForm.valid){
+      this.loadingService.presentLoading('Actualizando movimiento...');
+      const formValues = this.editMovementForm.value;
+      
+      this.movementsService.updateMovement(formValues).subscribe({
+        next: (response: any) => this.handleUpdateMovementSuccess(response),
+        error: (error: any) => this.handleUpdateMovementError(error)
+      });
+    }
+  }
+  handleUpdateMovementError(error: any): void {
+    this.loadingService.dismissLoading();
+    console.log(error);
+  }
+  handleUpdateMovementSuccess(response: any): void {
+    this.loadingService.dismissLoading();
+    this.editMovementModal.dismiss();
+    this.listMovements();
+    this.editMovementForm.reset();
+  }
+
+  openEditModal(movement: any){
+    this.editMovementForm.setValue({
+      id: movement.id,
+      description: movement.description,
+      amount: movement.amount,
+      type: movement.type,
+      createdDate: movement.createdDate,
+      categoryId: movement.categoryId,
+      accountId: movement.accountId
+    });
+    this.editMovementModal.present();
+  }
+
+  // Eliminar movimiento
+  deleteMovement(id: string){
+    this.loadingService.presentLoading('Eliminando movimiento...');
+    this.movementsService.deleteMovement(id).subscribe({
+      next: (response: any) => this.handleDeleteMovementSuccess(response),
+      error: (error: any) => this.handleDeleteMovementError(error)
+    });
+  }
+  handleDeleteMovementError(error: any): void {
+    this.loadingService.dismissLoading();
+    console.log(error);
+  }
+  handleDeleteMovementSuccess(response: any): void {
+    this.loadingService.dismissLoading();
+    this.listMovements();
+  }
+
   // Buscador
   selectCriterion(event: Event) {
     this.selectedCriterion =  (event.target as HTMLInputElement).value.toLowerCase();
@@ -196,6 +270,5 @@ export class MovementsPage implements OnInit {
     this.movementsListFiltered = this.movementsList;
     this.selectedCriterion = '';
   }
-
   
 }

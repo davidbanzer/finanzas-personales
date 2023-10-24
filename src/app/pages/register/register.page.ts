@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MenuController } from '@ionic/angular';
+import { MenuController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/api/auth.service';
 import { LoadingService } from 'src/app/services/loading.service';
 
@@ -19,7 +19,8 @@ export class RegisterPage implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private loadingService: LoadingService) {
+    private loadingService: LoadingService,
+    private toastController: ToastController) {
 
     this.menuCtrl.enable(false);
 
@@ -41,7 +42,7 @@ export class RegisterPage implements OnInit {
     }
   }
 
-  private async registerUser() {
+  async registerUser() {
     const formValues = this.registerForm.value;
 
     await this.loadingService.presentLoading('Registrando usuario...');
@@ -52,16 +53,27 @@ export class RegisterPage implements OnInit {
     })
   }
 
-  private async handleRegisterSuccess(response: any) {
+  async handleRegisterSuccess(response: any) {
     await this.loadingService.dismissLoading();
     this.registerForm.reset();
     localStorage.setItem('user', JSON.stringify(response));
     this.router.navigate(['/home']);
   }
 
-  private async handleRegisterError(error: any) {
+  async handleRegisterError(error: any) {
     await this.loadingService.dismissLoading();
+    this.presentToast(error.error.detail);
     console.log(error);
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 
 }

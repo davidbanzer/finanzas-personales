@@ -5,23 +5,20 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ApiConfigService {
-  private headersWithToken: HttpHeaders;
-  private headersWithoutToken: HttpHeaders;
-
-  constructor() {
-    this.headersWithToken = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${this.getToken()}`
-    });
-
-    this.headersWithoutToken = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    });
-  }
+  private headersWithToken: HttpHeaders = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  });
+  private headersWithoutToken: HttpHeaders = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  });
 
   getHeadersWithToken(): HttpHeaders {
+    const token = this.getToken();
+    if (token) {
+      this.headersWithToken = this.headersWithToken.set('Authorization', `Bearer ${token}`);
+    }
     return this.headersWithToken;
   }
 

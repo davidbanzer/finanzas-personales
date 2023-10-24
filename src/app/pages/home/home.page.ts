@@ -34,6 +34,7 @@ export class HomePage  {
 
 
   ionViewDidEnter() {
+    this.menuCtrl.enable(true);
     this.listAccounts();
     this.listMovements();
   }

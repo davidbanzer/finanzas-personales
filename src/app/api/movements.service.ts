@@ -48,4 +48,29 @@ export class MovementsService {
 
     return this.http.post(url, body, {headers});
   }
+
+  updateMovement(movement: any){
+    const url = `${this.API_URL}/movements/${movement.id}`;
+
+    const body = {
+      description: movement.description,
+      amount: movement.amount,
+      type: movement.type,
+      createdDate: movement.createdDate,
+      categoryId: movement.categoryId,
+      accountId: movement.accountId
+    }
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    return this.http.put(url, body, {headers});
+  }
+
+  deleteMovement(movementId: string){
+    const url = `${this.API_URL}/movements/${movementId}`;
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    return this.http.delete(url, {headers});
+  }
 }
