@@ -169,4 +169,8 @@ export class AccountsPage implements OnInit {
     this.editAccountModal.dismiss();
   }
 
+  openModal(){
+    this.addAccountModal.present();
+  }
+
 }

@@ -34,7 +34,7 @@
     </div>
   </ion-card>
 
-  <ion-modal #addModal trigger="open-modal">
+  <ion-modal #addModal>
     <ng-template>
       <ion-header>
         <ion-toolbar color="primary">
@@ -59,7 +59,7 @@
     </ng-template>
   </ion-modal>
 
-  <ion-modal #editModal trigger="open-edit-modal">
+  <ion-modal #editModal >
     <ng-template>
       <ion-header>
         <ion-toolbar color="primary">
@@ -80,13 +80,13 @@
 
           <ion-button expand="full" class="ion-margin-top" type="submit"
             [disabled]="!editCategoryForm.valid">Actualizar</ion-button>
-          <ion-button expand="full" class="ion-margin-top" (click)="cancelModal()" color="danger">Cancelar</ion-button>
+          <ion-button expand="full" class="ion-margin-top" (click)="cancelEditModal()" color="danger">Cancelar</ion-button>
         </form>
       </ion-content>
     </ng-template>
   </ion-modal>
 
-  <ion-fab id="open-modal" slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab id="open-modal" slot="fixed" vertical="bottom" horizontal="end" (click)="openModal()">
     <ion-fab-button>
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

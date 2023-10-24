@@ -270,5 +270,9 @@ export class MovementsPage implements OnInit {
     this.movementsListFiltered = this.movementsList;
     this.selectedCriterion = '';
   }
+
+  openModal(){
+    this.addMovementModal.present();
+  }
   
 }

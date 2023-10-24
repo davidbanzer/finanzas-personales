@@ -145,4 +145,8 @@ export class CategoriesPage implements OnInit {
     this.editCategoryModal.present();
   }
 
+  openModal(){
+    this.addCategoryModal.present();
+  }
+
 }
