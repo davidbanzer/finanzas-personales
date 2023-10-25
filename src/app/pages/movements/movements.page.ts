@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MenuController } from '@ionic/angular';
+import { MenuController, ToastController } from '@ionic/angular';
 import { AccountsService } from 'src/app/api/accounts.service';
 import { CategoriesService } from 'src/app/api/categories.service';
 import { MovementsService } from 'src/app/api/movements.service';
@@ -30,7 +30,8 @@ export class MovementsPage implements OnInit {
     private movementsService: MovementsService,
     private categoriesService: CategoriesService,
     private accountsService: AccountsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private toastController: ToastController
   ) {
     this.movementsList = [];
     this.movementsListFiltered = [];
@@ -201,6 +202,7 @@ export class MovementsPage implements OnInit {
   }
   handleUpdateMovementError(error: any): void {
     this.loadingService.dismissLoading();
+    this.presentToast(error.error.detail);
     console.log(error);
   }
   handleUpdateMovementSuccess(response: any): void {
@@ -233,6 +235,7 @@ export class MovementsPage implements OnInit {
   }
   handleDeleteMovementError(error: any): void {
     this.loadingService.dismissLoading();
+    this.presentToast(error.error.detail);
     console.log(error);
   }
   handleDeleteMovementSuccess(response: any): void {
@@ -273,6 +276,15 @@ export class MovementsPage implements OnInit {
 
   openModal(){
     this.addMovementModal.present();
+  }
+
+  async presentToast(message: string){
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    toast.present();
   }
   
 }

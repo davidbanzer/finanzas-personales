@@ -91,6 +91,7 @@ export class TransfersPage implements OnInit {
   }
   handleAddTransferError(error: any): void {
     this.loadingService.dismissLoading();
+    this.presentToast(error.error.detail);
     console.log(error);
   }
   handleAddTransferSuccess(response: any): void {
