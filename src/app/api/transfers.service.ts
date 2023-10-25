@@ -29,4 +29,21 @@ export class TransfersService {
 
     return this.http.post(url, body, {headers});
   }
+
+  getTransfersByUserId(userId: string){
+    const url = `${this.API_URL}/transfers/all/${userId}`;
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    return this.http.get(url, {headers});
+  }
+
+  deleteTransfer(transferId: string){
+    const url = `${this.API_URL}/transfers/${transferId}`;
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    return this.http.delete(url, {headers});
+  }
+
 }

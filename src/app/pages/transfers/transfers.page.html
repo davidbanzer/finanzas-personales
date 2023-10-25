@@ -12,6 +12,30 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <p class="ion-text-center" *ngIf="transfersList.length === 0">Sin transferencias</p>
+
+  <ion-card *ngFor="let transfer of transfersList" color="tertiary">
+    <ion-card-header>
+      <ion-card-title>
+        {{transfer.description}}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Origen: <strong>{{transfer.originAccount}}</strong></p>
+      <p>Destino: <strong>{{transfer.destinationAccount}}</strong></p>
+      <p>Monto: <strong style="font-size: 18px;">{{ transfer.amount }} Bs.</strong></p>
+      <p>Fecha: <strong>{{transfer.createdDate | date: 'dd/MM/yyyy'}}</strong></p>
+    </ion-card-content>
+    <div style="display: flex; justify-content: flex-end">
+      <ion-button id="open-edit-modal" color="light">
+        <ion-icon name="pencil"></ion-icon>
+      </ion-button>
+      <ion-button color="light" (click)="deleteTransfer(transfer.id)">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
+    </div>
+  </ion-card>
+
   <ion-modal #addModal>
     <ng-template>
       <ion-header>

@@ -5,6 +5,7 @@ import { AccountsService } from 'src/app/api/accounts.service';
 import { CategoriesService } from 'src/app/api/categories.service';
 import { TransfersService } from 'src/app/api/transfers.service';
 import { LoadingService } from 'src/app/services/loading.service';
+import { TransfersPageModule } from './transfers.module';
 
 @Component({
   selector: 'app-transfers',
@@ -14,6 +15,7 @@ import { LoadingService } from 'src/app/services/loading.service';
 export class TransfersPage implements OnInit {
   @ViewChild('addModal') addTransferModal!: any;
   transferForm: FormGroup;
+  transfersList: any[];
   accountsList: any[];
   categoriesList: any[];
   maxDate: string;
@@ -27,6 +29,7 @@ export class TransfersPage implements OnInit {
     private toastController: ToastController,
     private categoriesService: CategoriesService
   ) {
+    this.transfersList = [];
     this.accountsList = [];
     this.categoriesList = [];
     this.maxDate = new Date().toISOString();
@@ -41,6 +44,7 @@ export class TransfersPage implements OnInit {
   }
 
   ngOnInit() {
+    this.listTransfers();
     this.listAccounts();
     this.listCategories();
   }
@@ -67,6 +71,7 @@ export class TransfersPage implements OnInit {
     toast.present();
   }
 
+  // Agregar transferencia
   addTransfer() {
     if (this.transferForm.valid) {
 
@@ -92,8 +97,34 @@ export class TransfersPage implements OnInit {
     this.loadingService.dismissLoading();
     this.transferForm.reset();
     this.addTransferModal.dismiss();
+    this.listTransfers();
   }
 
+  // Listar transferncias
+  listTransfers() {
+    this.loadingService.presentLoading('Cargando transferencias...');
+    const user = JSON.parse(localStorage.getItem('user')!);
+    this.transfersService.getTransfersByUserId(user.id).subscribe({
+      next: (response: any) => this.handleListTransfersSuccess(response),
+      error: (error: any) => this.handleListTransfersError(error)
+    });
+  }
+  async handleListTransfersError(error: any): Promise<void> {
+    await this.loadingService.dismissLoading();
+    console.log(error);
+  }
+  async handleListTransfersSuccess(response: any): Promise<void> {
+    this.transfersList = response;
+
+    for (const transfer of this.transfersList) {
+      this.getAccountsForTransfer(transfer);
+    }
+
+    await this.loadingService.dismissLoading();
+
+  }
+
+  // Listar cuentas
   listAccounts() {
     const user = JSON.parse(localStorage.getItem('user')!);
     this.accountsService.getAccountsByUserId(user.id).subscribe({
@@ -119,10 +150,49 @@ export class TransfersPage implements OnInit {
   }
   handleListCategoriesSuccess(response: any): void {
     this.categoriesList = response;
-    console.log(this.categoriesList);
   }
-
   handleListCategoriesError(error: any): void {
     console.log(error);
+  }
+
+  // Cuentas por id
+  getAccountsForTransfer(transfer: any){
+    const user = JSON.parse(localStorage.getItem('user')!);
+
+    const originAccount = this.accountsService.getAccountById(transfer.originAccountId).subscribe({
+      next: (response: any) => this.handleGetAccountsForTransferSuccess(response, transfer),
+      error: (error: any) => this.handleGetAccountsForTransferError(error)
+    });
+
+    const destinationAccount = this.accountsService.getAccountById(transfer.destinationAccountId).subscribe({
+      next: (response: any) => this.handleGetAccountsForTransferSuccess2(response, transfer),
+      error: (error: any) => this.handleGetAccountsForTransferError(error)
+    });
+  }
+  handleGetAccountsForTransferError(error: any): void {
+    console.log(error);
+  }
+  handleGetAccountsForTransferSuccess(response: any, transfer: any): void {
+    transfer.originAccount = response.name;
+  }
+  handleGetAccountsForTransferSuccess2(response: any, transfer: any): void {
+    transfer.destinationAccount = response.name;
+  }
+
+  // Eliminar transferencia
+  deleteTransfer(id: string){
+    this.loadingService.presentLoading('Eliminando transferencia...');
+    this.transfersService.deleteTransfer(id).subscribe({
+      next: (response: any) => this.handleDeleteTransferSuccess(response),
+      error: (error: any) => this.handleDeleteTransferError(error)
+    })
+  }
+  handleDeleteTransferError(error: any): void {
+    this.loadingService.dismissLoading();
+    console.log(error);
+  }
+  handleDeleteTransferSuccess(response: any): void {
+    this.loadingService.dismissLoading();
+    this.listTransfers();
   }
 }
