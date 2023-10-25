@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IonModal, MenuController } from '@ionic/angular';
+import { IonModal, MenuController, ToastController } from '@ionic/angular';
 import { AccountsService } from 'src/app/api/accounts.service';
 import { LoadingService } from 'src/app/services/loading.service';
 
@@ -20,7 +20,8 @@ export class AccountsPage implements OnInit {
     private menuCtrl: MenuController,
     private accountsService: AccountsService,
     private loadingService: LoadingService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private toastController: ToastController
   ) {
     this.accountsList = [];
     this.accountForm = this.formBuilder.group({
@@ -101,6 +102,7 @@ export class AccountsPage implements OnInit {
   }
   handleAddAccountError(error: any): void {
     this.loadingService.dismissLoading();
+    this.presentToast(error.error.detail);
     console.log(error);
   }
   handleAddAccountSuccess(response: any): void {
@@ -160,6 +162,7 @@ export class AccountsPage implements OnInit {
   }
   handleUpdateAccountError(error: any): void {
     this.loadingService.dismissLoading();
+    this.presentToast(error.error.detail);
     console.log(error);
   }
   handleUpdateAccountSuccess(response: any): void {
@@ -171,6 +174,16 @@ export class AccountsPage implements OnInit {
 
   openModal(){
     this.addAccountModal.present();
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 
 }

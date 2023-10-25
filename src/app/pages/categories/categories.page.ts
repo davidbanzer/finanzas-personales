@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IonModal, MenuController } from '@ionic/angular';
+import { IonModal, MenuController, ToastController } from '@ionic/angular';
 import { CategoriesService } from 'src/app/api/categories.service';
 import { LoadingService } from 'src/app/services/loading.service';
 
@@ -21,7 +21,8 @@ export class CategoriesPage implements OnInit {
     private menuCtrl: MenuController,
     private loadingService: LoadingService,
     private categoriesService: CategoriesService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private toastController: ToastController
   ) {
     this.categoriesList = [];
     this.categoryForm = this.formBuilder.group({
@@ -79,6 +80,7 @@ export class CategoriesPage implements OnInit {
   }
   handleAddCategoryError(error: any): void {
     this.loadingService.dismissLoading();
+    this.presentToast(error.error.detail);
     console.log(error);
   }
   handleAddCategorySuccess(response: any): void {
@@ -119,6 +121,7 @@ export class CategoriesPage implements OnInit {
   }
   handleUpdateCategoryError(error: any): void {
     this.loadingService.dismissLoading();
+    this.presentToast(error.error.detail);
     console.log(error);
   }
   handleUpdateCategorySuccess(response: any): void {
@@ -149,4 +152,13 @@ export class CategoriesPage implements OnInit {
     this.addCategoryModal.present();
   }
 
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'bottom',
+    });
+
+    await toast.present();
+  }
 }

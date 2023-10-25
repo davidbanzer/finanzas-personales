@@ -38,6 +38,23 @@ export class TransfersService {
     return this.http.get(url, {headers});
   }
 
+  updateTransfer(transfer: any){
+    const url = `${this.API_URL}/transfers/${transfer.id}`;
+
+    const headers = this.apiConfig.getHeadersWithToken();
+
+    const body = {
+      description: transfer.description,
+      amount: transfer.amount,
+      originAccountId: transfer.originAccountId,
+      destinationAccountId: transfer.destinationAccountId,
+      categoryId: transfer.categoryId,
+      createdDate: transfer.createdDate
+    }
+
+    return this.http.put(url, body, {headers});
+  }
+
   deleteTransfer(transferId: string){
     const url = `${this.API_URL}/transfers/${transferId}`;
 

@@ -6,6 +6,7 @@ import { CategoriesService } from 'src/app/api/categories.service';
 import { TransfersService } from 'src/app/api/transfers.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { TransfersPageModule } from './transfers.module';
+import { MovementsService } from 'src/app/api/movements.service';
 
 @Component({
   selector: 'app-transfers',
@@ -14,10 +15,14 @@ import { TransfersPageModule } from './transfers.module';
 })
 export class TransfersPage implements OnInit {
   @ViewChild('addModal') addTransferModal!: any;
+  @ViewChild('editModal') editTransferModal!: any;
   transferForm: FormGroup;
+  editTransferForm: FormGroup;
   transfersList: any[];
   accountsList: any[];
   categoriesList: any[];
+  movementsList: any[];
+  
   maxDate: string;
 
   constructor(
@@ -27,11 +32,13 @@ export class TransfersPage implements OnInit {
     private accountsService: AccountsService,
     private transfersService: TransfersService,
     private toastController: ToastController,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    private movementsService: MovementsService,
   ) {
     this.transfersList = [];
     this.accountsList = [];
     this.categoriesList = [];
+    this.movementsList = [];
     this.maxDate = new Date().toISOString();
     this.transferForm = this.formBuilder.group({
       description: ['', Validators.required],
@@ -41,12 +48,23 @@ export class TransfersPage implements OnInit {
       categoryId: ['', Validators.required],
       createdDate: [this.maxDate, Validators.required]
     });
+
+    this.editTransferForm = this.formBuilder.group({
+      id: ['', Validators.required],
+      description: ['', Validators.required],
+      amount: ['', Validators.required],
+      originAccountId: ['', Validators.required],
+      destinationAccountId: ['', Validators.required],
+      categoryId: ['', Validators.required],
+      createdDate: ['', Validators.required]
+    });
   }
 
   ngOnInit() {
     this.listTransfers();
     this.listAccounts();
     this.listCategories();
+    this.listMovements();
   }
 
   toggleMenu() {
@@ -58,8 +76,39 @@ export class TransfersPage implements OnInit {
     this.addTransferModal.dismiss();
   }
 
+  cancelEditModal(){
+    this.editTransferForm.reset();
+    this.editTransferModal.dismiss();
+  }
+
   openModal() {
     this.addTransferModal.present();
+  }
+
+  listMovements(){
+    const user = JSON.parse(localStorage.getItem('user')!);
+    this.movementsService.getMovementsByUserId(user.id).subscribe({
+      next: (response: any) => this.handleListMovementsSuccess(response),
+      error: (error: any) => this.handleListMovementsError(error)
+    });
+  }
+  handleListMovementsSuccess(response: any): void {
+    this.movementsList = response;
+  }
+  handleListMovementsError(error: any): void {
+    console.log(error);
+  }
+  openEditModal(transfer: any){
+    this.editTransferForm.setValue({
+      id: transfer.id,
+      description: transfer.description,
+      amount: transfer.amount,
+      originAccountId: transfer.originAccountId,
+      destinationAccountId: transfer.destinationAccountId,
+      categoryId: this.movementsList.find(movement => movement.id === transfer.originMovementId).categoryId, 
+      createdDate: transfer.createdDate
+    });
+    this.editTransferModal.present();
   }
 
   async presentToast(message: string) {
@@ -195,5 +244,29 @@ export class TransfersPage implements OnInit {
   handleDeleteTransferSuccess(response: any): void {
     this.loadingService.dismissLoading();
     this.listTransfers();
+  }
+
+  // Editar transferencia
+  updateTransfer(){
+    if(this.editTransferForm.valid){
+      this.loadingService.presentLoading('Actualizando transferencia...');
+      const formValues = this.editTransferForm.value;
+
+      this.transfersService.updateTransfer(formValues).subscribe({
+        next: (response: any) => this.handleUpdateTransferSuccess(response),
+        error: (error: any) => this.handleUpdateTransferError(error)
+      });
+    }
+  }
+  handleUpdateTransferSuccess(response: any): void {
+    this.loadingService.dismissLoading();
+    this.editTransferForm.reset();
+    this.listTransfers();
+    this.editTransferModal.dismiss();
+  }
+  handleUpdateTransferError(error: any): void {
+    this.loadingService.dismissLoading();
+    this.presentToast(error.error.detail);
+    console.log(error);
   }
 }

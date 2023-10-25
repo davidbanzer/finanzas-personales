@@ -27,7 +27,7 @@
       <p>Fecha: <strong>{{transfer.createdDate | date: 'dd/MM/yyyy'}}</strong></p>
     </ion-card-content>
     <div style="display: flex; justify-content: flex-end">
-      <ion-button id="open-edit-modal" color="light">
+      <ion-button id="open-edit-modal" color="light" (click)="openEditModal(transfer)">
         <ion-icon name="pencil"></ion-icon>
       </ion-button>
       <ion-button color="light" (click)="deleteTransfer(transfer.id)">
@@ -86,6 +86,69 @@
         </form>
       </ion-content>
     </ng-template>
+  </ion-modal>
+
+  <ion-modal #editModal>
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Editar transferencia</ion-title>
+        </ion-toolbar> 
+      </ion-header>
+      <ion-content class="ion-padding">
+        <form [formGroup]="editTransferForm" (ngSubmit)="updateTransfer()">
+          <ion-item style="display: none;">
+            <ion-input formControlName="id" type="text" label="Id" labelPlacement="floating"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-select formControlName="originAccountId" label="Cuenta origen" placeholder="Seleccione la cuenta">
+              <ion-select-option *ngFor="let account of accountsList"
+                [value]="account.id">{{account.name}}</ion-select-option>
+            </ion-select>
+
+          </ion-item>
+          <ion-item>
+            <ion-select formControlName="destinationAccountId" label="Cuenta destino"
+              placeholder="Seleccione la cuenta">
+              <ion-select-option *ngFor="let account of accountsList"
+                [value]="account.id">{{account.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-input formControlName="description" type="text" label="Descripción"
+              labelPlacement="floating"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-input formControlName="amount" type="number" label="Monto" labelPlacement="floating"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-select formControlName="categoryId" label="Categoría" placeholder="Seleccione la categoría">
+              <ion-select-option *ngFor="let category of categoriesList"
+                [value]="category.id">{{category.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>
+              Fecha
+            </ion-label>
+          </ion-item>
+
+          <div style="display: flex; justify-content: center;">
+            <ion-datetime formControlName="createdDate" presentation="date" [max]="maxDate"></ion-datetime>
+          </div>
+
+          <ion-button expand="full" class="ion-margin-top" type="submit"
+            [disabled]="!editTransferForm.valid">Editar</ion-button>
+
+          <ion-button expand="full" class="ion-margin-top" (click)="cancelEditModal()"
+            color="danger">Cancelar</ion-button>
+        </form>
+      </ion-content>
+    </ng-template> 
   </ion-modal>
 
   <ion-fab id="open-modal" slot="fixed" vertical="bottom" horizontal="end" (click)="openModal()">
